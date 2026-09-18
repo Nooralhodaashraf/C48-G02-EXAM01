@@ -6,3 +6,5 @@ Exam done structure
 PExam done structure
 FExam done structure
 Subject done structure
+FExam showExam()    implemented done 
+

@@ -5,6 +5,7 @@ using System.Text;
 namespace C48_G02_EXAM01.classes
 {
     //Design a Base class Exam describe the common attributes
+    //3. We want the application to accept different Question Types: make the baseand inhert from it
     internal abstract class Exam
     {
         //a.Time of exam

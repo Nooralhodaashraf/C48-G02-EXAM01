@@ -1,4 +1,5 @@
 ﻿using C48_G02_EXAM01.classes;
+using System.Data;
 
 namespace C48_G02_EXAM01
 {
@@ -6,6 +7,7 @@ namespace C48_G02_EXAM01
     {
         static void Main(string[] args)
         {
+           var timenow = TimeSpan.FromMinutes(60);
             // 1. Choose Subject
             subject mySubject = ChooseSubject();
 
@@ -14,9 +16,11 @@ namespace C48_G02_EXAM01
 
             // 3. Create Questions based on Exam Type
             baseQuestion[] questions = CreateQuestions(isFinal);
-
+           
+            
+           
             // 4. Create Exam
-            mySubject.CreateExam(isFinal,30,questions.Length,questions);
+            //mySubject.CreateExam(isFinal,timeOfExamOfTheExam ,questions.Length,questions);
 
             // 5. Show Exam
             Console.Clear();
@@ -28,42 +32,109 @@ namespace C48_G02_EXAM01
         // to choose the subject
         static subject ChooseSubject()
         {
+            int SubjectListLengh;
+
+            while (true)
+            {
+            Console.WriteLine("please Enter Number Of Subjects:");
+
+                if (int.TryParse(Console.ReadLine(), out SubjectListLengh) && SubjectListLengh > 0) //check the input type & its not null =0
+                {
+                    break; // will initiate the array length in numberOfQuestions and break the loop if the input is valid
+                }
+
+                Console.WriteLine("Please enter a valid positive number.");
+            }
+            subject[] mySubjectList = new subject[SubjectListLengh];
+           
+            for (int i = 0; i < mySubjectList.Length; i++)
+            {
+                Console.WriteLine("Enter Subject {0} name:", i + 1);
+                string NameOfSubject = Console.ReadLine();
+                while (string.IsNullOrWhiteSpace(NameOfSubject))
+                {
+                    Console.WriteLine("Subject name cannot be empty.");
+                    Console.Write("Enter Subject {0} name: ", i + 1);
+
+                    NameOfSubject = Console.ReadLine();
+                }
+
+                mySubjectList[i] = new subject(i + 1, NameOfSubject);
+            }
+
+            //foreach(subject subjectItem in mySubjectList)
+            //{
+            //    Console.WriteLine(subjectItem);
+            //} كنت بتأكد من الليسته 
+
             // Showing options to choose the subject
-            Console.WriteLine("Choose Subject:");
-            Console.WriteLine("1. Programming");
-            Console.WriteLine("2. Database");
-            Console.WriteLine("3. Networking");
+            //Console.WriteLine("Choose Subject:");
+            //Console.WriteLine("1. Programming");
+            //Console.WriteLine("2. Database");
+            //Console.WriteLine("3. Networking");نغير دي هيبقى اشيك لما المستخدم هو اللي يدخل المواد بتاعته 
+
+            //while (true)
+            //{
+            //    Console.Write("Enter the number of your choice: ");
+
+            //    // Validating the choice input to int
+            //    if (int.TryParse(Console.ReadLine(), out int choice))
+            //    {
+            //        switch (choice)
+            //        {
+            //            case 1:
+            //                return new subject(1, "Programming");
+
+            //            case 2:
+            //                return new subject(2, "Database");
+
+            //            case 3:
+            //                return new subject(3, "Networking");
+
+            //            default:
+            //                Console.WriteLine(
+            //                    "Please choose a number from 1 to 3."
+            //                );
+            //                break;
+            //        }
+            //    }
+            //    else
+            //    {
+            //        Console.WriteLine("Please enter a valid number.");
+            //    }
+            //}
+            Console.WriteLine("\nChoose Subject:");
+
+            for (int i = 0; i < mySubjectList.Length; i++)
+            {
+                Console.WriteLine($"{i + 1}. {mySubjectList[i].SubjectName}");
+            }
 
             while (true)
             {
                 Console.Write("Enter the number of your choice: ");
 
-                // Validating the choice input to int
                 if (int.TryParse(Console.ReadLine(), out int choice))
                 {
-                    switch (choice)
+                    if (choice >= 1 && choice <= mySubjectList.Length)
                     {
-                        case 1:
-                            return new subject(1, "Programming");
+                        subject selectedSubject = mySubjectList[choice - 1];
 
-                        case 2:
-                            return new subject(2, "Database");
+                        Console.WriteLine($"You selected: {selectedSubject.SubjectName}");
 
-                        case 3:
-                            return new subject(3, "Networking");
-
-                        default:
-                            Console.WriteLine(
-                                "Please choose a number from 1 to 3."
-                            );
-                            break;
+                        return selectedSubject;
                     }
+
+                    Console.WriteLine(
+                        $"Please choose a number from 1 to {mySubjectList.Length}."
+                    );
                 }
                 else
                 {
                     Console.WriteLine("Please enter a valid number.");
                 }
             }
+
         }
 
 

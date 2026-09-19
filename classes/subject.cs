@@ -25,15 +25,19 @@ namespace C48_G02_EXAM01.classes
 
         //d.We need to implement functionality to create the exam of the subject.
 
+        public override string ToString()
+        {
+            return $" {SubjectId}- {SubjectName}";
+        }
+
         public void CreateExam( bool isFinal, int timeOfExam, int numberOfQuestions, baseQuestion[] questions)
         {
-        //isFinal to check the exam type 
+            //isFinal to check the exam type 
+
+            
             if (isFinal)
             {
-                ExamOfTheSubject = new FinalExam(
-                    timeOfExam,
-                    numberOfQuestions,
-                    this, //current subject
+                ExamOfTheSubject = new FinalExam( timeOfExam, numberOfQuestions,this, //current subject
                     questions);
             }
             else

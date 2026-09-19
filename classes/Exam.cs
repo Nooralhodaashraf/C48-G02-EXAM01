@@ -31,7 +31,7 @@ namespace C48_G02_EXAM01.classes
 
 
         //c.Show Exam Functionality that its implementations will be different for each exam based on its type.
-        public abstract void ShowExam();
+        public abstract void ShowExam(decimal totalGrade);
 
     }
 }

@@ -19,10 +19,10 @@ namespace C48_G02_EXAM01.classes
 
 
 
-        public override void ShowExam()
+        public override void ShowExam(decimal totalGrade)
         {
+            Console.WriteLine($"Subject: {Subject.SubjectName}");
             decimal grade = 0; // Initialize the grade to 0 to calculate it
-
             // 9 - Final Exam Shows the Questions, Answers and Grade.
             foreach (baseQuestion question in Questions)
             {
@@ -38,9 +38,22 @@ namespace C48_G02_EXAM01.classes
 
                 // Get student's answer (to store it)
                 Console.Write("Enter your answer: ");
-                
-              int.TryParse(Console.ReadLine(), out int answerId) ; // كنت ناسية الفالديشن هنا ابقي اكدي عليه قبل التسليم !!!!!!!!!
 
+                int answerId;
+
+                while (true)
+                {
+                    Console.Write("Enter your answer: ");
+
+                    if (int.TryParse(Console.ReadLine(), out answerId) &&
+                        answerId >= 1 &&
+                        answerId <= question.AnswerList.Length)
+                    {
+                        break;
+                    }
+
+                    Console.WriteLine($"Please enter a number from 1 to {question.AnswerList.Length}.");
+                }
                 // Store the student's selected answer
                 foreach (Answer answer in question.AnswerList)
                 {
@@ -50,6 +63,7 @@ namespace C48_G02_EXAM01.classes
                         break;
                     }
                 }
+                    Console.WriteLine($"Correct Answer Is :{question.RightAnswer.AnswerText}");
                 // Calculate grade
                 if (question.StudentAnswer != null && //make sure its not null 
                     question.StudentAnswer.AnswerId == question.RightAnswer.AnswerId)//make sure that the answer is right (correct)
@@ -59,7 +73,7 @@ namespace C48_G02_EXAM01.classes
             }
 
             // Show final grade of the total exam
-            Console.WriteLine($"Grade: {grade}");
+            Console.WriteLine($"Grade: {grade} of {totalGrade}");
         }
     }
 }

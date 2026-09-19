@@ -1,30 +1,70 @@
 ﻿using C48_G02_EXAM01.classes;
 using System.Data;
+using System.Diagnostics;
 
 namespace C48_G02_EXAM01
 {
-    internal class Program
+    internal class Program 
     {
+
         static void Main(string[] args)
         {
-           var timenow = TimeSpan.FromMinutes(60);
             // 1. Choose Subject
             subject mySubject = ChooseSubject();
-
-            // 2. Choose Exam Type
             bool isFinal = ChooseExamType();
+            var result = CreateQuestions(isFinal);
+            baseQuestion[] questions = result.questions;
+            decimal totalGrade = result.TotalGrade;
 
-            // 3. Create Questions based on Exam Type
-            baseQuestion[] questions = CreateQuestions(isFinal);
-           
-            
-           
-            // 4. Create Exam
-            //mySubject.CreateExam(isFinal,timeOfExamOfTheExam ,questions.Length,questions);
+            int timeOfExam;
+
+            while (true)
+            {
+                Console.Write("Enter Exam Time in Minutes: ");
+
+                if (int.TryParse(Console.ReadLine(), out timeOfExam) && timeOfExam > 0)
+                {
+                    break;
+                }
+
+                Console.WriteLine("Please enter a valid positive number.");
+            }
+
+
+            mySubject.CreateExam(isFinal,timeOfExam, questions.Length, questions);
+
+
+            //Console.WriteLine("finished");
+
+
+            //Console.WriteLine(mySubject);
+            //Console.WriteLine("mySubject");
+            //Console.WriteLine("mySubject.ExamOfTheSubject");
+
+
 
             // 5. Show Exam
             Console.Clear();
-            mySubject.ExamOfTheSubject.ShowExam();
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
+            Thread timerThread = new Thread(() =>
+            {
+                while (stopwatch.Elapsed.TotalMinutes < timeOfExam)
+                {
+                    Thread.Sleep(TimeSpan.FromMinutes(timeOfExam));
+                }
+                Console.WriteLine("\n\nTime's up!");
+                Console.SetIn(TextReader.Null);
+
+                stopwatch.Stop();
+            });
+
+            timerThread.Start();
+
+            mySubject.ExamOfTheSubject.ShowExam(totalGrade);
+
+            timerThread.Join();
+
         }
 
 
@@ -33,7 +73,6 @@ namespace C48_G02_EXAM01
         static subject ChooseSubject()
         {
             int SubjectListLengh;
-
             while (true)
             {
             Console.WriteLine("please Enter Number Of Subjects:");
@@ -62,54 +101,12 @@ namespace C48_G02_EXAM01
                 mySubjectList[i] = new subject(i + 1, NameOfSubject);
             }
 
-            //foreach(subject subjectItem in mySubjectList)
-            //{
-            //    Console.WriteLine(subjectItem);
-            //} كنت بتأكد من الليسته 
-
-            // Showing options to choose the subject
-            //Console.WriteLine("Choose Subject:");
-            //Console.WriteLine("1. Programming");
-            //Console.WriteLine("2. Database");
-            //Console.WriteLine("3. Networking");نغير دي هيبقى اشيك لما المستخدم هو اللي يدخل المواد بتاعته 
-
-            //while (true)
-            //{
-            //    Console.Write("Enter the number of your choice: ");
-
-            //    // Validating the choice input to int
-            //    if (int.TryParse(Console.ReadLine(), out int choice))
-            //    {
-            //        switch (choice)
-            //        {
-            //            case 1:
-            //                return new subject(1, "Programming");
-
-            //            case 2:
-            //                return new subject(2, "Database");
-
-            //            case 3:
-            //                return new subject(3, "Networking");
-
-            //            default:
-            //                Console.WriteLine(
-            //                    "Please choose a number from 1 to 3."
-            //                );
-            //                break;
-            //        }
-            //    }
-            //    else
-            //    {
-            //        Console.WriteLine("Please enter a valid number.");
-            //    }
-            //}
             Console.WriteLine("\nChoose Subject:");
 
             for (int i = 0; i < mySubjectList.Length; i++)
             {
                 Console.WriteLine($"{i + 1}. {mySubjectList[i].SubjectName}");
             }
-
             while (true)
             {
                 Console.Write("Enter the number of your choice: ");
@@ -118,11 +115,10 @@ namespace C48_G02_EXAM01
                 {
                     if (choice >= 1 && choice <= mySubjectList.Length)
                     {
-                        subject selectedSubject = mySubjectList[choice - 1];
-
-                        Console.WriteLine($"You selected: {selectedSubject.SubjectName}");
-
-                        return selectedSubject;
+                     subject mySubject = mySubjectList[choice - 1];
+                        Console.WriteLine(mySubject);
+                        // call CreateExam (uses questions.Length property) and then return the subject
+                     return mySubject;
                     }
 
                     Console.WriteLine(
@@ -134,6 +130,7 @@ namespace C48_G02_EXAM01
                     Console.WriteLine("Please enter a valid number.");
                 }
             }
+
 
         }
 
@@ -170,10 +167,11 @@ namespace C48_G02_EXAM01
 
 
         // Creating the questions array
-        static baseQuestion[] CreateQuestions(bool isFinal)
+        static (baseQuestion[] questions, decimal TotalGrade) CreateQuestions(bool isFinal)
         {
+            decimal TotalGrade = 0;
             int numberOfQuestions; //array length
-
+           
             while (true)
             {
                 Console.Write("Enter number of questions: ");
@@ -192,16 +190,18 @@ namespace C48_G02_EXAM01
             {
                 Console.WriteLine($"\n--- Question {i + 1} ---");
 
-                questions[i] = CreateQuestion(isFinal);
+                questions[i] = CreateQuestionType(isFinal);
+                TotalGrade += questions[i].QuestionMark;
             }
-
-            return questions;
+       
+            Console.WriteLine(TotalGrade);
+            return (questions, TotalGrade);
         }
 
 
 
         // Creating one question
-        static baseQuestion CreateQuestion(bool isFinal)
+        static baseQuestion CreateQuestionType(bool isFinal)
         {
             int questionType; // 1 for MCQ, 2 for True / False
 
@@ -304,7 +304,7 @@ namespace C48_G02_EXAM01
 
         // Creating an MCQ question
 
-        static MCQ CreateMCQQuestion( string header,string body,decimal mark)
+        static MCQ CreateMCQQuestion( string header,string body,decimal mark )
         {
             int numberOfChoices;
 

@@ -30,14 +30,21 @@ namespace C48_G02_EXAM01.classes
             return $" {SubjectId}- {SubjectName}";
         }
 
-        public void CreateExam( bool isFinal, int timeOfExam, int numberOfQuestions, baseQuestion[] questions)
-        {
-            //isFinal to check the exam type 
 
-            
+
+
+
+
+        public void CreateExam(bool isFinal,int timeOfExam, int numberOfQuestions, baseQuestion[] questions)
+        {
+           
+
             if (isFinal)
             {
-                ExamOfTheSubject = new FinalExam( timeOfExam, numberOfQuestions,this, //current subject
+                ExamOfTheSubject = new FinalExam(
+                    timeOfExam,
+                    numberOfQuestions,
+                    this,
                     questions);
             }
             else
@@ -45,7 +52,7 @@ namespace C48_G02_EXAM01.classes
                 ExamOfTheSubject = new PracticalExam(
                     timeOfExam,
                     numberOfQuestions,
-                    this, //current subject
+                    this,
                     questions);
             }
         }

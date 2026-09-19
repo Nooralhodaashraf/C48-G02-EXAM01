@@ -10,8 +10,9 @@ namespace C48_G02_EXAM01.classes
         {
         }
 
-        public override void ShowExam()
+        public override void ShowExam(decimal totalGrade = 0)
         {
+            Console.WriteLine($"Subject: {Subject.SubjectName}");
             foreach (baseQuestion question in Questions)
             {
                 Console.WriteLine(question.QuestionHeader);
@@ -23,8 +24,21 @@ namespace C48_G02_EXAM01.classes
                 }
 
                 Console.Write("Enter your answer: ");
-                int answerId = int.Parse(Console.ReadLine());
+                int answerId;
 
+                while (true)
+                {
+                    Console.Write("Enter your answer: ");
+
+                    if (int.TryParse(Console.ReadLine(), out answerId) &&
+                        answerId >= 1 &&
+                        answerId <= question.AnswerList.Length)
+                    {
+                        break;
+                    }
+
+                    Console.WriteLine($"Please enter a number from 1 to {question.AnswerList.Length}.");
+                }
                 foreach (Answer answer in question.AnswerList)
                 {
                     if (answer.AnswerId == answerId)
@@ -41,6 +55,7 @@ namespace C48_G02_EXAM01.classes
             {
                 Console.WriteLine( $"{question.QuestionHeader}: {question.RightAnswer.AnswerText}");
             }
+
         }
     }
 }

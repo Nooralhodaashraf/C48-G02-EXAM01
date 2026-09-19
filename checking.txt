@@ -7,4 +7,6 @@ PExam done structure
 FExam done structure
 Subject done structure
 FExam showExam()    implemented done 
-
+clone () method implemented done
+creating q done 
+compare q done

@@ -19,6 +19,7 @@ namespace C48_G02_EXAM01
             mySubject.CreateExam(isFinal,30,questions.Length,questions);
 
             // 5. Show Exam
+            Console.Clear();
             mySubject.ExamOfTheSubject.ShowExam();
         }
 
@@ -282,9 +283,7 @@ namespace C48_G02_EXAM01
 
             while (true)
             {
-                Console.Write(
-                    "Enter the correct answer number: "
-                );
+                Console.Write( "Enter the correct answer number: ");
 
                 if (int.TryParse(Console.ReadLine(), out correctAnswerId) && correctAnswerId >= 1 && correctAnswerId <= numberOfChoices)
                 {
